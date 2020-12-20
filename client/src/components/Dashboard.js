@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 // import { Link } from 'react-router-dom';
 import SocketContext from '../context/SocketContext';
 import RoomsList from './RoomsList';
+import { v4 as uuid } from 'uuid'
 
 const Dashboard = (props) => {
   const { history } = props
@@ -23,6 +24,7 @@ const Dashboard = (props) => {
     // handleRoomCreate
     mySocket.emit('createRoom', {
       roomName,
+      roomId: uuid(),
       topic,
       capacity
     }, (err, res) => {
@@ -51,6 +53,7 @@ const Dashboard = (props) => {
         </label>
         <button type='submit'>Create!</button>
       </form>
+      <button onClick={() => console.log(uuid())}>click</button>
       <RoomsList rooms={rooms} />
     </div>
   );
