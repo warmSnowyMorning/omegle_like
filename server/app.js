@@ -2,6 +2,7 @@ const express = require('express')
 const socketio = require('socket.io')
 const http = require('http')
 const rooms = require('./structures/rooms')
+const usersInRooms = require('./structures/usersInRooms')
 const app = express();
 const path = require('path')
 
@@ -11,6 +12,7 @@ const io = socketio(server)
 io.on('connect', socket => {
   console.log('new connection!', socket.id)
   socket.emit('test', { a: 10, b: 20 })
+
   socket.on('createRoom', ({ roomName, topic, capacity }, ack) => {
     rooms[socket.id] = {
       messages: [],
@@ -19,7 +21,10 @@ io.on('connect', socket => {
       users: [socket.id],
       capacity
     }
-    console.log(rooms)
+
+    usersInRooms[socket.id] = socket.id
+
+    console.log(rooms, usersInRooms)
     socket.broadcast.emit('updateRoomsList', rooms)
 
     ack(null, 'wassup doc')
