@@ -11,6 +11,7 @@ const Dashboard = (props) => {
   const [topic, set_topic] = useState('')
   const [capacity, set_capacity] = useState('')
   const [rooms, set_rooms] = useState([])
+
   useEffect(() => {
     mySocket.on('updateRoomsList', (roomsRes) => {
       console.log('some update')
@@ -18,6 +19,7 @@ const Dashboard = (props) => {
     })
 
   }, [])
+
   const handleRoomCreate = (e) => {
     e.preventDefault()
     // console.log(props.history.push('/chat'))

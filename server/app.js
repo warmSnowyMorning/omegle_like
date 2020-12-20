@@ -1,7 +1,8 @@
 const express = require('express')
 const socketio = require('socket.io')
 const http = require('http')
-const Rooms = require('./structures/Rooms')
+const RoomsClass = require('./structures/Rooms')
+const Rooms = new RoomsClass()
 const app = express();
 const path = require('path')
 
@@ -13,17 +14,23 @@ io.on('connect', socket => {
 
   socket.on('createRoom', (roomInfo, ack) => {
 
-    Rooms.create(socket.id, roomInfo)
-    socket.join()
+    const { rooms, anonId } = Rooms.createRoom(socket.id, roomInfo)
+    socket.join(roomInfo.roomId)
     socket.broadcast.emit('updateRoomsList', rooms)
 
-    ack(null, 'wassup doc')
+    ack(null, {
+      anonId,
+      rooms
+    })
   })
 
 
   socket.on('disconnect', () => {
     console.log('user has left', socket.id)
-    //if user is a room owner, dc everyone from that room and then delete; naturally it will handle room owner too.
+
+    const rooms = Rooms.userHasRoom(socket.id) ? Rooms.deleteRoom(socket.id) : Rooms.leaveRoom(socket.id)
+
+    socket.broadcast.emit('updateRoomsList', rooms)
 
   })
 })
