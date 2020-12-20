@@ -13,16 +13,7 @@ io.on('connect', socket => {
   console.log('new connection!', socket.id)
   socket.emit('test', { a: 10, b: 20 })
 
-  socket.on('createRoom', ({ roomName, topic, capacity }, ack) => {
-    rooms[socket.id] = {
-      messages: [],
-      roomName,
-      topic,
-      users: [socket.id],
-      capacity
-    }
-
-    usersInRooms[socket.id] = socket.id
+  socket.on('createRoom', (roomInfo, ack) => {
 
     console.log(rooms, usersInRooms)
     socket.broadcast.emit('updateRoomsList', rooms)
@@ -30,12 +21,29 @@ io.on('connect', socket => {
     ack(null, 'wassup doc')
   })
 
+
   socket.on('disconnect', () => {
     console.log('user has left', socket.id)
+    //if user is a room owner, dc everyone from that room and then delete; naturally it will handle room owner too.
     if (rooms[socket.id]) {
+      const room = rooms[socket.id]
+      for (const user in room.users) {
+        delete usersInRooms[user]
+      }
+
       delete rooms[socket.id]
 
       socket.broadcast.emit('updateRoomsList', rooms)
+    }
+
+    //if user still is in a room, find their room and mutate it; removing them.
+    if (usersInRooms[socket.id]) {
+      const theirRoom = usersInRooms[socket.id]
+
+      const idxToSplice = rooms[theirRoom].users.findIndex((user) => user = socket.id)
+
+      rooms[theirRoom].users.splice(idxToSplice, 1)
+
     }
   })
 })
