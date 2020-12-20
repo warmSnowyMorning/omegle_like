@@ -1,15 +1,19 @@
 import React, { useContext } from 'react';
 import SocketContext from '../context/SocketContext';
+import { withRouter } from 'react-router-dom'
 
 const RoomsListItem = (props) => {
+  const { history } = props
   const { host, roomName, ...rest } = props.roomInfo
   const mySocket = useContext(SocketContext)
 
   const handleRoomJoin = (e) => {
     e.preventDefault()
     mySocket.emit('joinRoom', { host }, (err, data) => {
+      console.log(props)
       if (err) return console.log(err)
       console.log(data)
+      history.push(`/chat/${host}`)
     })
   }
   return (
@@ -21,4 +25,4 @@ const RoomsListItem = (props) => {
   )
 }
 
-export default RoomsListItem;
+export default withRouter(RoomsListItem);

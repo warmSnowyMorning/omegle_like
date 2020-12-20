@@ -8,6 +8,7 @@ const RoomsList = (props) => {
   return (
     <div>
       {rooms.map(([roomId, roomInfo]) => <RoomsListItem roomInfo={roomInfo} key={roomId} />)}
+      <button onClick={() => console.log(props)}>click me</button>
     </div>
   );
 }

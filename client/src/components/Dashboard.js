@@ -13,9 +13,9 @@ const Dashboard = (props) => {
   const [rooms, set_rooms] = useState([])
 
   useEffect(() => {
-    mySocket.on('updateRoomsList', (roomsRes) => {
+    mySocket.on('updateRoomsList', ({ rooms: newRooms }) => {
       console.log('some update')
-      set_rooms(Object.entries(roomsRes))
+      set_rooms(Object.entries(newRooms))
     })
 
   }, [])
@@ -55,7 +55,7 @@ const Dashboard = (props) => {
         </label>
         <button type='submit'>Create!</button>
       </form>
-      <button onClick={() => console.log(uuid())}>click</button>
+      <button onClick={() => console.log(props)}>click</button>
       <RoomsList rooms={rooms} />
     </div>
   );

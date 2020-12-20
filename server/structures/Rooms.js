@@ -17,7 +17,7 @@ class Rooms {
     this.rooms[host].visitedUsers += 1
     const anonId = this.rooms[host].visitedUsers
     this.rooms[host].users.push({ user, anonId })
-
+    console.log(this.userLocation)
     cb(null, {
       rooms: this.rooms,
       anonId
@@ -32,7 +32,7 @@ class Rooms {
 
     const idxToSplice = this.rooms[theirRoom].users.findIndex((someUser) => someUser.user === user)
 
-    rooms[theirRoom].users.splice(idxToSplice, 1)
+    this.rooms[theirRoom].users.splice(idxToSplice, 1)
 
     return this.rooms
   }
@@ -45,7 +45,7 @@ class Rooms {
     const theirRoom = this.currentRoom(user)
     if (!theirRoom) return false
 
-    return users[theirRoom].users.find(userInfo => userInfo.user === user).anonId
+    return this.rooms[theirRoom].users.find(userInfo => userInfo.user === user).anonId
 
   }
   createRoom(creator, { roomName, topic, capacity, roomId }) {

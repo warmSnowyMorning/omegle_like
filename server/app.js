@@ -16,7 +16,7 @@ io.on('connect', socket => {
 
     const { rooms, anonId } = Rooms.createRoom(socket.id, roomInfo)
     socket.join(roomInfo.roomId)
-    socket.broadcast.emit('updateRoomsList', rooms)
+    socket.broadcast.emit('updateRoomsList', { rooms })
 
     ack(null, {
       anonId,
@@ -38,17 +38,17 @@ io.on('connect', socket => {
 
     const wasHost = Rooms.userIsHost(socket.id)
     const roomId = Rooms.findTheirRoomId(socket.id)
-    const rooms = wasHost ? Rooms.deleteRoom(socket.id) : Rooms.leaveRoom(socket.id)
     const anonId = Rooms.findUsersAnonId(socket.id)
-
+    const rooms = wasHost ? Rooms.deleteRoom(socket.id) : Rooms.leaveRoom(socket.id)
+    console.log(anonId)
     if (wasHost) {
-      socket.broadcast.to(roomId).emit('leaveRoom', (err, data) => {
+      io.to(roomId).emit('leaveRoom', (err, data) => {
         if (err) return console.log(err)
 
-        socket.broadcast.emit('updateRoomsList', rooms)
+        io.emit('updateRoomsList', { rooms })
       })
     } else {
-      socket.broadcast.to(roomId).emit('someoneLeft', { anonId })
+      io.to(roomId).emit('someoneLeft', { anonId, rooms })
     }
 
     // socket.broadcast.emit('updateRoomsList', rooms)
