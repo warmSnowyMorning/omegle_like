@@ -12,9 +12,10 @@ class Rooms {
     const roomStatus = this.roomJoinable(host)
 
     if (!roomStatus) return cb(true)
-    this.userLocation[host] = room
+    this.userLocation[user] = host
 
-    const anonId = ++this.rooms[host].visitedUsers
+    this.rooms[host].visitedUsers += 1
+    const anonId = this.rooms[host].visitedUsers
     this.rooms[host].users.push({ user, anonId })
 
     cb(null, {
@@ -47,7 +48,7 @@ class Rooms {
     return users[theirRoom].users.find(userInfo => userInfo.user === user).anonId
 
   }
-  createRoom(creator, { roomName, topic, capacity, roomId, visitedUsers }) {
+  createRoom(creator, { roomName, topic, capacity, roomId }) {
     const anonId = 1
     this.rooms[creator] = {
       messages: [],
@@ -55,7 +56,7 @@ class Rooms {
       roomName,
       host: creator,
       topic,
-      visitedUsers,
+      visitedUsers: anonId,
       users: [{ user: creator, anonId }],
       capacity
     }
@@ -63,7 +64,7 @@ class Rooms {
     this.userLocation[creator] = creator
     return {
       rooms: this.rooms,
-      anonId: 1
+      anonId
     }
   }
   currentRoom(user) {

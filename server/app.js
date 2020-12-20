@@ -26,7 +26,7 @@ io.on('connect', socket => {
   socket.on('joinRoom', ({ host }, ack) => {
     Rooms.joinRoom(socket.id, host, (err, data) => {
       if (err) return ack(err)
-
+      console.log(Rooms.rooms)
       ack(null, data)
     })
   })
