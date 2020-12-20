@@ -8,14 +8,14 @@ class Rooms {
     return this.rooms[host].users.length < this.rooms[host].capacity ? true : false
   }
 
-  joinRoom(user, host, newVisitedUsersCt) {
+  joinRoom(user, host) {
     const roomStatus = this.roomJoinable(host)
 
     if (!roomStatus) return roomStatus
     this.userLocation[host] = room
 
-    this.rooms[host].users.push(user)
     const anonId = ++this.rooms[host].visitedUsers
+    this.rooms[host].users.push({ user, anonId })
 
     return {
       rooms: this.rooms,
@@ -29,26 +29,34 @@ class Rooms {
     delete this.userLocation[user]
     if (roomDel) return
 
-    const idxToSplice = this.rooms[theirRoom].users.findIndex((someUser) => someUser === user)
+    const idxToSplice = this.rooms[theirRoom].users.findIndex((someUser) => someUser.user === user)
 
     rooms[theirRoom].users.splice(idxToSplice, 1)
 
     return this.rooms
   }
 
-  userHasRoom(user) {
+  userIsHost(user) {
     return !!this.rooms[user]
   }
 
+  findUsersAnonId(user) {
+    const theirRoom = this.currentRoom(user)
+    if (!theirRoom) return false
+
+    return users[theirRoom].users.find(userInfo => userInfo.user === user).anonId
+
+  }
   createRoom(creator, { roomName, topic, capacity, roomId, visitedUsers }) {
+    const anonId = 1
     this.rooms[creator] = {
       messages: [],
       roomId,
       roomName,
-      creator,
+      host: creator,
       topic,
       visitedUsers,
-      users: [creator],
+      users: [{ user: creator, anonId }],
       capacity
     }
 
@@ -57,6 +65,9 @@ class Rooms {
       rooms: this.rooms,
       anonId: 1
     }
+  }
+  currentRoom(user) {
+    return this.userLocation[user]
   }
   findTheirRoomId(user) {
     const theirHost = this.userLocation[user]

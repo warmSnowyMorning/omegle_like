@@ -23,14 +23,21 @@ io.on('connect', socket => {
       rooms
     })
   })
+  socket.on('joinRoom', (ack) => {
 
+
+    ack(null, 'you\'re in my boy!!')
+  })
 
   socket.on('disconnect', () => {
     console.log('user has left', socket.id)
 
+    if (!Rooms.currentRoom(socket.id)) return
+
     const wasHost = Rooms.userIsHost(socket.id)
     const roomId = Rooms.findTheirRoomId(socket.id)
     const rooms = wasHost ? Rooms.deleteRoom(socket.id) : Rooms.leaveRoom(socket.id)
+    const anonId = Rooms.findUsersAnonId(socket.id)
 
     if (wasHost) {
       socket.broadcast.to(roomId).emit('leaveRoom', (err, data) => {
@@ -39,7 +46,7 @@ io.on('connect', socket => {
         socket.broadcast.emit('updateRoomsList', rooms)
       })
     } else {
-      socket.broadcast.to(roomId).emit('someoneLeft',)
+      socket.broadcast.to(roomId).emit('someoneLeft', { anonId })
     }
 
     // socket.broadcast.emit('updateRoomsList', rooms)
