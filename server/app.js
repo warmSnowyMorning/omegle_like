@@ -23,10 +23,12 @@ io.on('connect', socket => {
       rooms
     })
   })
-  socket.on('joinRoom', (ack) => {
+  socket.on('joinRoom', ({ host }, ack) => {
+    Rooms.joinRoom(socket.id, host, (err, data) => {
+      if (err) return ack(err)
 
-
-    ack(null, 'you\'re in my boy!!')
+      ack(null, data)
+    })
   })
 
   socket.on('disconnect', () => {

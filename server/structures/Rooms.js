@@ -8,19 +8,19 @@ class Rooms {
     return this.rooms[host].users.length < this.rooms[host].capacity ? true : false
   }
 
-  joinRoom(user, host) {
+  joinRoom(user, host, cb) {
     const roomStatus = this.roomJoinable(host)
 
-    if (!roomStatus) return roomStatus
+    if (!roomStatus) return cb(true)
     this.userLocation[host] = room
 
     const anonId = ++this.rooms[host].visitedUsers
     this.rooms[host].users.push({ user, anonId })
 
-    return {
+    cb(null, {
       rooms: this.rooms,
       anonId
-    }
+    })
   }
 
   leaveRoom(user, roomDel = false) {
