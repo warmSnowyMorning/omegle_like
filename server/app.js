@@ -28,10 +28,21 @@ io.on('connect', socket => {
   socket.on('disconnect', () => {
     console.log('user has left', socket.id)
 
-    const rooms = Rooms.userHasRoom(socket.id) ? Rooms.deleteRoom(socket.id) : Rooms.leaveRoom(socket.id)
+    const wasHost = Rooms.userIsHost(socket.id)
+    const roomId = Rooms.findTheirRoomId(socket.id)
+    const rooms = wasHost ? Rooms.deleteRoom(socket.id) : Rooms.leaveRoom(socket.id)
 
-    socket.broadcast.emit('updateRoomsList', rooms)
+    if (wasHost) {
+      socket.broadcast.to(roomId).emit('leaveRoom', (err, data) => {
+        if (err) return console.log(err)
 
+        socket.broadcast.emit('updateRoomsList', rooms)
+      })
+    } else {
+      socket.broadcast.to(roomId).emit('someoneLeft',)
+    }
+
+    // socket.broadcast.emit('updateRoomsList', rooms)
   })
 })
 
