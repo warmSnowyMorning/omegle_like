@@ -4,6 +4,7 @@ import SocketContext from '../context/SocketContext';
 import RoomsList from './RoomsList';
 import { v4 as uuid } from 'uuid'
 import generateChatUrl from '../utils/generateChatUrl';
+import produce from 'immer'
 
 const Dashboard = (props) => {
   const { history } = props
@@ -13,11 +14,14 @@ const Dashboard = (props) => {
   const [capacity, set_capacity] = useState('')
   const [rooms, set_rooms] = useState([])
 
+
+
   useEffect(() => {
     mySocket.on('updateRoomsList', ({ rooms: newRooms }) => {
       console.log('some update')
       set_rooms(Object.entries(newRooms))
     })
+
     mySocket.emit('getRooms', (err, { rooms: allRooms }) => {
       if (err) return console.log(err)
       console.log(allRooms, err)
@@ -67,6 +71,8 @@ const Dashboard = (props) => {
       </form>
       <button onClick={() => console.log(props)}>click</button>
       <RoomsList rooms={rooms} />
+
+
     </div>
   );
 }

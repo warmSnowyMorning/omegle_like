@@ -24,6 +24,9 @@ class Rooms {
     })
   }
 
+  addMessage(host, message) {
+    this.rooms[host].messages.push(message)
+  }
 
   leaveRoom(user, roomDel = false) {
 

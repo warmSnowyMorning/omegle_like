@@ -44,12 +44,14 @@ io.on('connect', socket => {
     ack('error error')
 
   })
+
   socket.on('newMessage', (data, ack) => {
     const { anonId, roomId, message, timestamp, host } = data
     console.log(data)
-
+    Rooms.addMessage(host, data)
+    ack(null)
+    io.to(roomId).emit('addMessage', { message: data })
   })
-
   socket.on('disconnect', () => {
     console.log('user has left', socket.id)
 
