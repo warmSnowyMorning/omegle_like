@@ -17,7 +17,11 @@ const Dashboard = (props) => {
       console.log('some update')
       set_rooms(Object.entries(newRooms))
     })
-
+    mySocket.emit('getRooms', (err, { rooms: allRooms }) => {
+      if (err) return console.log(err)
+      console.log(allRooms, err)
+      set_rooms(Object.entries(allRooms))
+    })
   }, [])
 
   const handleRoomCreate = (e) => {
@@ -40,7 +44,7 @@ const Dashboard = (props) => {
   return (
     <div>
       <form onSubmit={handleRoomCreate}>
-        <h1>Create a new room!</h1>
+        <h1>Create a new room!!!</h1>
         <label>
           Room Name
         <input type='text' value={roomName} onChange={(e) => set_roomName(e.target.value)} />

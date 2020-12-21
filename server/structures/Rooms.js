@@ -60,7 +60,7 @@ class Rooms {
       users: [{ user: creator, anonId }],
       capacity
     }
-
+    console.log(this.rooms, 'all rooms after creating new one')
     this.userLocation[creator] = creator
     return {
       rooms: this.rooms,
@@ -72,6 +72,7 @@ class Rooms {
   }
   findTheirRoomId(user) {
     const theirHost = this.userLocation[user]
+    console.log(theirHost)
     return this.rooms[theirHost].roomId
 
   }

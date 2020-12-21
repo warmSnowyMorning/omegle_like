@@ -23,12 +23,18 @@ io.on('connect', socket => {
       rooms
     })
   })
-  socket.on('joinRoom', ({ host }, ack) => {
+  socket.on('joinRoom', ({ host, roomId }, ack) => {
     Rooms.joinRoom(socket.id, host, (err, data) => {
       if (err) return ack(err)
       console.log(Rooms.rooms)
+
+      socket.join(roomId)
       ack(null, data)
     })
+  })
+  socket.on('getRooms', (ack) => {
+    console.log(Rooms.rooms)
+    ack(null, { rooms: Rooms.rooms })
   })
 
   socket.on('disconnect', () => {
@@ -40,15 +46,13 @@ io.on('connect', socket => {
     const roomId = Rooms.findTheirRoomId(socket.id)
     const anonId = Rooms.findUsersAnonId(socket.id)
     const rooms = wasHost ? Rooms.deleteRoom(socket.id) : Rooms.leaveRoom(socket.id)
-    console.log(anonId)
+    //potentially loop through room users and have them all leave; then send an emit for everyone to update their dashboard rooms
+    console.log(anonId, wasHost)
     if (wasHost) {
-      io.to(roomId).emit('leaveRoom', (err, data) => {
-        if (err) return console.log(err)
-
-        io.emit('updateRoomsList', { rooms })
-      })
+      console.log(Rooms.rooms, 'hostDeleting his Room', roomId)
+      io.to(roomId).emit('leaveRoom', { anonId, rooms })
     } else {
-      io.to(roomId).emit('someoneLeft', { anonId, rooms })
+      io.to(roomId).emit('leaveRoom', { anonId, rooms })
     }
 
     // socket.broadcast.emit('updateRoomsList', rooms)

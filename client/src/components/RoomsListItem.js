@@ -4,12 +4,12 @@ import { withRouter } from 'react-router-dom'
 
 const RoomsListItem = (props) => {
   const { history } = props
-  const { host, roomName, ...rest } = props.roomInfo
+  const { host, roomName, roomId, ...rest } = props.roomInfo
   const mySocket = useContext(SocketContext)
 
   const handleRoomJoin = (e) => {
     e.preventDefault()
-    mySocket.emit('joinRoom', { host }, (err, data) => {
+    mySocket.emit('joinRoom', { host, roomId }, (err, data) => {
       console.log(props)
       if (err) return console.log(err)
       console.log(data)
