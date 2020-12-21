@@ -39,11 +39,11 @@ const Dashboard = (props) => {
       roomId,
       topic,
       capacity
-    }, (err, res) => {
+    }, (err, { anonId }) => {
       if (err) return console.log('error')
-      console.log(res, 'success')
+      console.log('success')
 
-      history.push(generateChatUrl(mySocket.id, roomId))
+      history.push(generateChatUrl(mySocket.id, roomId, anonId))
     })
   }
 

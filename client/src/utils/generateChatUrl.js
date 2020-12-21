@@ -1,1 +1,1 @@
-export default (host, roomId) => `/chat?host=${host}&room=${roomId}`
+export default (host, roomId, anonId) => `/chat?host=${host}&room=${roomId}&anon=${anonId}`

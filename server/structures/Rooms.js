@@ -48,6 +48,9 @@ class Rooms {
     return this.rooms[theirRoom].users.find(userInfo => userInfo.user === user).anonId
 
   }
+  getMessages(host) {
+    return this.rooms[host].messages
+  }
   createRoom(creator, { roomName, topic, capacity, roomId }) {
     const anonId = 1
     this.rooms[creator] = {

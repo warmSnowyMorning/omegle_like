@@ -2,11 +2,14 @@ import React, { useContext, useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom'
 import SocketContext from '../context/SocketContext';
 import MessagesList from './MessagesList';
+import queryString from 'query-string'
 
 const Chat = (props) => {
   const { history, location } = props
   const mySocket = useContext(SocketContext)
   const [messages, set_messages] = useState([])
+  const { host, room, anon: anonId } = queryString.parse(location.search)
+  const [message, set_message] = useState('')
 
   useEffect(() => {
     mySocket.on('leaveRoom', (data) => {
@@ -20,18 +23,33 @@ const Chat = (props) => {
     mySocket.on('sucessUserJoin', (data) => {
       console.log(data.anonId, ' has just joined your room!!!')
     })
-    const pathParts = location.pathname.split('/')
+    mySocket.on('newMessage', (data) => {
+      set_messages(messages.concat({ new: 'message' }))
+    })
 
-    mySocket.emit('validateMe', { host: pathParts[pathParts.length - 1] }, (err, { messages: allMessages }) => {
+    mySocket.emit('validateMe', { host }, (err, { messages: allMessages }) => {
       if (err) return history.push('/')
       set_messages(allMessages)
     })
 
     return () => mySocket.removeAllListeners()
   }, [])
+
+  const sendNewMessage = (e) => {
+    mySocket.emit('newMessage', {})
+    set_message('')
+  }
   return (
     <div>
       <MessagesList messages={messages} />
+
+      <input
+        type='text'
+        onChange={e => set_message(e.target.value)}
+        value={message}
+        onKeyPress={e => e.key === 'Enter' && sendNewMessage(e)}
+        placeholder='type and press Enter to send!'
+      />
     </div>
   );
 }

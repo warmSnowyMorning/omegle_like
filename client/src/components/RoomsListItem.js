@@ -10,11 +10,10 @@ const RoomsListItem = (props) => {
 
   const handleRoomJoin = (e) => {
     e.preventDefault()
-    mySocket.emit('joinRoom', { host, roomId }, (err, data) => {
+    mySocket.emit('joinRoom', { host, roomId }, (err, { anonId }) => {
       console.log(props)
       if (err) return console.log(err)
-      console.log(data)
-      history.push(generateChatUrl(host, roomId))
+      history.push(generateChatUrl(host, roomId, anonId))
     })
   }
   return (

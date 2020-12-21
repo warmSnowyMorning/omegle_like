@@ -39,7 +39,7 @@ io.on('connect', socket => {
     ack(null, { rooms: Rooms.rooms })
   })
   socket.on('validateMe', ({ host }, ack) => {
-    if (Rooms.validateUser(socket.id, host)) return ack(null, 'you\'re where you\'re supposed to be!!')
+    if (Rooms.validateUser(socket.id, host)) return ack(null, { messages: Rooms.getMessages(host) })
     console.log('hello')
     ack('error error')
 
