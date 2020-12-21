@@ -24,6 +24,7 @@ class Rooms {
     })
   }
 
+
   leaveRoom(user, roomDel = false) {
 
     const theirRoom = this.userLocation[user]

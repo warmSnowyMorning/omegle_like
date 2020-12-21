@@ -44,6 +44,11 @@ io.on('connect', socket => {
     ack('error error')
 
   })
+  socket.on('newMessage', (data, ack) => {
+    const { anonId, roomId, message, timestamp, host } = data
+    console.log(data)
+
+  })
 
   socket.on('disconnect', () => {
     console.log('user has left', socket.id)

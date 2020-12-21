@@ -8,7 +8,7 @@ const Chat = (props) => {
   const { history, location } = props
   const mySocket = useContext(SocketContext)
   const [messages, set_messages] = useState([])
-  const { host, room, anon: anonId } = queryString.parse(location.search)
+  const { host, room: roomId, anon: anonId } = queryString.parse(location.search)
   const [message, set_message] = useState('')
 
   useEffect(() => {
@@ -23,8 +23,8 @@ const Chat = (props) => {
     mySocket.on('sucessUserJoin', (data) => {
       console.log(data.anonId, ' has just joined your room!!!')
     })
-    mySocket.on('newMessage', (data) => {
-      set_messages(messages.concat({ new: 'message' }))
+    mySocket.on('newMessage', ({ message }) => {
+      set_messages(messages.concat(message))
     })
 
     mySocket.emit('validateMe', { host }, (err, { messages: allMessages }) => {
@@ -36,8 +36,10 @@ const Chat = (props) => {
   }, [])
 
   const sendNewMessage = (e) => {
-    mySocket.emit('newMessage', {})
-    set_message('')
+    mySocket.emit('newMessage', { anonId, roomId, message, timestamp: new Date().valueOf(), host }, (err, data) => {
+      if (err) return console.log(err)
+      set_message('')
+    })
   }
   return (
     <div>
