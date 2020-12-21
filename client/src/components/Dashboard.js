@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import SocketContext from '../context/SocketContext';
 import RoomsList from './RoomsList';
 import { v4 as uuid } from 'uuid'
+import generateChatUrl from '../utils/generateChatUrl';
 
 const Dashboard = (props) => {
   const { history } = props
@@ -32,16 +33,17 @@ const Dashboard = (props) => {
     e.preventDefault()
     // console.log(props.history.push('/chat'))
     // handleRoomCreate
+    const roomId = uuid()
     mySocket.emit('createRoom', {
       roomName,
-      roomId: uuid(),
+      roomId,
       topic,
       capacity
     }, (err, res) => {
       if (err) return console.log('error')
       console.log(res, 'success')
 
-      history.push(`/chat/${mySocket.id}`)
+      history.push(generateChatUrl(mySocket.id, roomId))
     })
   }
 

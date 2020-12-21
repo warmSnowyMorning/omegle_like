@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import SocketContext from '../context/SocketContext';
 import { withRouter } from 'react-router-dom'
+import generateChatUrl from '../utils/generateChatUrl';
 
 const RoomsListItem = (props) => {
   const { history } = props
@@ -13,7 +14,7 @@ const RoomsListItem = (props) => {
       console.log(props)
       if (err) return console.log(err)
       console.log(data)
-      history.push(`/chat/${host}`)
+      history.push(generateChatUrl(host, roomId))
     })
   }
   return (

@@ -1,0 +1,1 @@
+export default (host, roomId) => `/chat?host=${host}&room=${roomId}`

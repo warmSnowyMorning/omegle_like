@@ -25,7 +25,7 @@ export default () => {
         <Router>
           <SocketContext.Provider value={mySocket}>
             <Route path="/" exact component={Dashboard} />
-            <Route path="/chat/:id" exact component={Chat} />
+            <Route path="/chat" exact component={Chat} />
           </SocketContext.Provider>
 
         </Router>
