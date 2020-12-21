@@ -76,9 +76,12 @@ class Rooms {
     return this.rooms[theirHost].roomId
 
   }
+  validateUser(user, host) {
+    return this.userLocation[user] === host ? true : false
+  }
   deleteRoom(creator) {
     const room = this.rooms[creator]
-    for (const user in room.users) {
+    for (const { user } of room.users) {
       delete this.userLocation[user]
     }
 

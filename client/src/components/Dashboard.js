@@ -22,6 +22,10 @@ const Dashboard = (props) => {
       console.log(allRooms, err)
       set_rooms(Object.entries(allRooms))
     })
+
+    return () => {
+      mySocket.removeAllListeners()
+    }
   }, [])
 
   const handleRoomCreate = (e) => {

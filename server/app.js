@@ -25,9 +25,11 @@ io.on('connect', socket => {
   })
   socket.on('joinRoom', ({ host, roomId }, ack) => {
     Rooms.joinRoom(socket.id, host, (err, data) => {
+      // const {anonId} = data
+
       if (err) return ack(err)
       console.log(Rooms.rooms)
-
+      socket.broadcast.to(roomId).emit('sucessUserJoin', data)
       socket.join(roomId)
       ack(null, data)
     })
@@ -36,11 +38,19 @@ io.on('connect', socket => {
     console.log(Rooms.rooms)
     ack(null, { rooms: Rooms.rooms })
   })
+  socket.on('validateMe', ({ host }, ack) => {
+    if (Rooms.validateUser(socket.id, host)) return ack(null, 'you\'re where you\'re supposed to be!!')
+    console.log('hello')
+    ack('error error')
+
+  })
 
   socket.on('disconnect', () => {
     console.log('user has left', socket.id)
 
-    if (!Rooms.currentRoom(socket.id)) return
+    const currentRoom = Rooms.currentRoom(socket.id)
+    console.log(currentRoom)
+    if (!currentRoom) return
 
     const wasHost = Rooms.userIsHost(socket.id)
     const roomId = Rooms.findTheirRoomId(socket.id)
@@ -48,14 +58,17 @@ io.on('connect', socket => {
     const rooms = wasHost ? Rooms.deleteRoom(socket.id) : Rooms.leaveRoom(socket.id)
     //potentially loop through room users and have them all leave; then send an emit for everyone to update their dashboard rooms
     console.log(anonId, wasHost)
+
+    const payload = { anonId, rooms }
     if (wasHost) {
       console.log(Rooms.rooms, 'hostDeleting his Room', roomId)
-      io.to(roomId).emit('leaveRoom', { anonId, rooms })
+      socket.broadcast.to(roomId).emit('leaveRoom', payload)
     } else {
-      io.to(roomId).emit('leaveRoom', { anonId, rooms })
+      socket.broadcast.to(roomId).emit('someoneLeft', payload)
     }
+    socket.broadcast.emit('updateRoomsList', { rooms })
 
-    // socket.broadcast.emit('updateRoomsList', rooms)
+
   })
 })
 
