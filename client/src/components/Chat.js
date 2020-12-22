@@ -36,7 +36,8 @@ const Chat = (props) => {
     mySocket.emit('validateMe', { host }, (err, data) => {
       console.log('validateMe Event')
       if (err) return history.push('/')
-      const { messages: allMessages } = data
+      const { roomInfo: { messages: allMessages, users } } = data
+      console.log(users)
       set_messages(allMessages)
       messagesRef.current = allMessages
     })
@@ -45,13 +46,17 @@ const Chat = (props) => {
   }, [])
 
   const sendNewMessage = (e) => {
-    e.preventDefault()
     const { host, room: roomId, anon: anonId } = queryString.parse(location.search)
+    e.preventDefault()
 
-    mySocket.emit('newMessage', { anonId, roomId, message, timestamp: new Date().valueOf(), host }, (err, data) => {
-      if (err) return console.log(err)
-      set_message('')
-    })
+
+
+    if (e.key === 'Enter') {
+      mySocket.emit('newMessage', { anonId, roomId, message, timestamp: new Date().valueOf(), host }, (err, data) => {
+        if (err) return console.log(err)
+        set_message('')
+      })
+    }
   }
   return (
     <div>
@@ -61,7 +66,7 @@ const Chat = (props) => {
         type='text'
         onChange={e => set_message(e.target.value)}
         value={message}
-        onKeyPress={e => e.key === 'Enter' && sendNewMessage(e)}
+        onKeyPress={sendNewMessage}
         placeholder='type and press Enter to send!'
       />
 

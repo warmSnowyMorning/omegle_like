@@ -16,7 +16,7 @@ class Rooms {
 
     this.rooms[host].visitedUsers += 1
     const anonId = this.rooms[host].visitedUsers
-    this.rooms[host].users.push({ user, anonId })
+    this.rooms[host].users.push({ user, anonId, typing: false })
     console.log(this.userLocation)
     cb(null, {
       rooms: this.rooms,
@@ -26,6 +26,10 @@ class Rooms {
 
   addMessage(host, message) {
     this.rooms[host].messages.push(message)
+  }
+  toggleTyping(host, user) {
+    const ourUser = this.rooms[host].users.find((someUser) => someUser.user === user)
+    ourUser.typing = !ourUser.typing
   }
 
   leaveRoom(user, roomDel = false) {
@@ -64,7 +68,7 @@ class Rooms {
       host: creator,
       topic,
       visitedUsers: anonId,
-      users: [{ user: creator, anonId }],
+      users: [{ user: creator, anonId, typing: false }],
       capacity
     }
     console.log(this.rooms, 'all rooms after creating new one')
@@ -82,6 +86,10 @@ class Rooms {
     console.log(theirHost)
     return this.rooms[theirHost].roomId
 
+  }
+
+  getRoom(host) {
+    return this.rooms[host]
   }
   validateUser(user, host) {
     return this.userLocation[user] === host ? true : false
