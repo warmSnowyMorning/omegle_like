@@ -14,9 +14,12 @@ io.on('connect', socket => {
   console.log('new connection!', socket.id)
 
   socket.on('createRoom', (roomInfo, ack) => {
-
+    const { roomId } = roomInfo
     const { rooms, anonId } = Rooms.createRoom(socket.id, roomInfo)
     socket.join(roomInfo.roomId)
+    const newMessage = generateMessage(`Stranger ${anonId} has just connected!`, new Date().valueOf(), socket.id, anonId, roomId, socket.id, 'ADMIN')
+    Rooms.addMessage(socket.id, newMessage)
+
     socket.broadcast.emit('updateRoomsList', { rooms })
 
     ack(null, {
@@ -58,7 +61,7 @@ io.on('connect', socket => {
     const newMessage = generateMessage(message, timestamp, socket.id, anonId, roomId, host, 'USER')
     Rooms.addMessage(host, newMessage)
     ack(null)
-    io.to(roomId).emit('addMessage', { newMessage })
+    io.to(roomId).emit('addMessage', { message: newMessage })
   })
   socket.on('disconnect', () => {
     console.log('user has left', socket.id)
