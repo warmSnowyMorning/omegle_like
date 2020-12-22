@@ -5,6 +5,7 @@ const RoomsClass = require('./structures/Rooms')
 const Rooms = new RoomsClass()
 const app = express();
 const path = require('path')
+const generateMessage = require('./utils/generateMessage')
 
 const server = http.createServer(app)
 const io = socketio(server)
@@ -25,11 +26,16 @@ io.on('connect', socket => {
   })
   socket.on('joinRoom', ({ host, roomId }, ack) => {
     Rooms.joinRoom(socket.id, host, (err, data) => {
-      // const {anonId} = data
-
       if (err) return ack(err)
+
+      const { anonId, rooms } = data
       console.log(Rooms.rooms)
-      socket.broadcast.to(roomId).emit('sucessUserJoin', data)
+      // socket.broadcast.to(roomId).emit('sucessUserJoin', data)
+      const newMessage = generateMessage(`Stranger ${anonId} has just connected!`, new Date().valueOf(), socket.id, anonId, roomId, host, 'ADMIN')
+      Rooms.addMessage(host, newMessage)
+
+      socket.broadcast.to(roomId).emit('addMessage', { message: newMessage })
+      io.emit('updateRoomsList', { rooms })
       socket.join(roomId)
       ack(null, data)
     })
@@ -48,9 +54,11 @@ io.on('connect', socket => {
   socket.on('newMessage', (data, ack) => {
     const { anonId, roomId, message, timestamp, host } = data
     console.log(data)
-    Rooms.addMessage(host, data)
+
+    const newMessage = generateMessage(message, timestamp, socket.id, anonId, roomId, host, 'USER')
+    Rooms.addMessage(host, newMessage)
     ack(null)
-    io.to(roomId).emit('addMessage', { message: data })
+    io.to(roomId).emit('addMessage', { newMessage })
   })
   socket.on('disconnect', () => {
     console.log('user has left', socket.id)
@@ -71,7 +79,11 @@ io.on('connect', socket => {
       console.log(Rooms.rooms, 'hostDeleting his Room', roomId)
       socket.broadcast.to(roomId).emit('leaveRoom', payload)
     } else {
-      socket.broadcast.to(roomId).emit('someoneLeft', payload)
+      const newMessage = generateMessage(`Stranger ${anonId} has just left!`, new Date().valueOf(), null, anonId, roomId, currentRoom, 'ADMIN')
+      socket.broadcast.to(roomId).emit('addMessage', {
+        message: newMessage
+      })
+      Rooms.addMessage(currentRoom, newMessage)
     }
     socket.broadcast.emit('updateRoomsList', { rooms })
 
