@@ -43,7 +43,7 @@ const Dashboard = (props) => {
       roomName,
       roomId,
       topic,
-      capacity
+      capacity: parseInt(capacity, 10)
     }, (err, { anonId }) => {
       if (err) return console.log('error')
       console.log('success')

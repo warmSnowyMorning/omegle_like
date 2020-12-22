@@ -7,7 +7,7 @@ const RoomsList = (props) => {
 
   return (
     <div>
-      {rooms.map(([roomId, roomInfo]) => <RoomsListItem roomInfo={roomInfo} key={roomId} />)}
+      {rooms.map(([host, roomInfo]) => <RoomsListItem roomInfo={roomInfo} key={host} />)}
     </div>
   );
 }
