@@ -32,7 +32,7 @@ class Rooms {
     ourUser.typing = !ourUser.typing
 
     if (targetUser) ourUser.targetUser = targetUser
-
+    console.log(ourUser)
     return this.rooms[host].users
   }
 

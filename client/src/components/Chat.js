@@ -77,7 +77,9 @@ const Chat = (props) => {
     const newMessagePayload = { anonId, roomId, message, timestamp: new Date().valueOf(), host }
 
     if (parseInt(messageTarget, 10) > 0) {
-      const targetUser = users.find(({ anonId: someAnonId }) => someAnonId == messageTarget)
+      const targetUser = users.filter(({ anonId: someAnonId }) => someAnonId == messageTarget)[0]
+      // delete targetUser
+      delete targetUser.targetUser
       console.log(targetUser, 'messageTargetThingie')
 
       toggleTypingPayload['targetUser'] = targetUser
