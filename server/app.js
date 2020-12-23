@@ -63,6 +63,11 @@ io.on('connect', socket => {
     ack(null)
     io.to(roomId).emit('addMessage', { message: newMessage })
   })
+
+  socket.on('toggleTyping', ({ host, userId, roomId }) => {
+    const users = Rooms.toggleTyping(host, userId)
+    io.to(roomId).emit('toggleUser', { users })
+  })
   socket.on('disconnect', () => {
     console.log('user has left', socket.id)
 

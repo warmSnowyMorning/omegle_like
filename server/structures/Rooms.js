@@ -30,6 +30,8 @@ class Rooms {
   toggleTyping(host, user) {
     const ourUser = this.rooms[host].users.find((someUser) => someUser.user === user)
     ourUser.typing = !ourUser.typing
+
+    return this.rooms[host].users
   }
 
   leaveRoom(user, roomDel = false) {
