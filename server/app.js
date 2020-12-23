@@ -75,7 +75,8 @@ io.on('connect', socket => {
       const users = Rooms.toggleTyping(host, userId)
       io.to(roomId).emit('toggleUser', { users })
     } else {
-      io.to(targetUser.user).emit('toggleUser', { users: Rooms.immutableToggleTyping(host, userId) })
+      const users = Rooms.toggleTyping(host, userId, targetUser)
+      io.to(socket.id).to(targetUser.user).emit('toggleUser', { users })
     }
   })
   socket.on('disconnect', () => {

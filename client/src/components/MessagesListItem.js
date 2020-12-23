@@ -15,7 +15,7 @@ const MessagesListItem = (props) => {
 
       <pre>
         {JSON.stringify(message, null, 2)}
-        <h1>{userId === mySocket.id && type === 'ADMIN' ? content.includes('left') ? 'You\'ve just left this room!' : 'You\'ve just joined this room' : type === 'ADMIN' ? content : userId === mySocket.id ? `You: ${content}` : `Stranger ${anonId}: ${content}`}</h1>
+        <h1>{content}</h1>
       </pre>
     </div>
   );

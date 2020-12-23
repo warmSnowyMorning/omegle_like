@@ -27,17 +27,19 @@ class Rooms {
   addMessage(host, message) {
     this.rooms[host].messages.push(message)
   }
-  toggleTyping(host, user) {
+  toggleTyping(host, user, targetUser) {
     const ourUser = this.rooms[host].users.find((someUser) => someUser.user === user)
     ourUser.typing = !ourUser.typing
+
+    if (targetUser) ourUser.targetUser = targetUser
 
     return this.rooms[host].users
   }
 
   //purpose is only one user needs to see someone typing
-  immutableToggleTyping(host, user) {
-    return this.rooms[host].users.map((someUser) => someUser.user !== user ? someUser : { ...someUser, typing: !someUser.typing })
-  }
+  // immutableToggleTyping(host, user) {
+  //   return this.rooms[host].users.map((someUser) => someUser.user !== user ? someUser : { ...someUser, typing: !someUser.typing })
+  // }
 
   leaveRoom(user, roomDel = false) {
 
