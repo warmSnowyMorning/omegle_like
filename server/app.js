@@ -55,18 +55,28 @@ io.on('connect', socket => {
   })
 
   socket.on('newMessage', (data, ack) => {
-    const { anonId, roomId, message, timestamp, host } = data
+    const { anonId, roomId, message, timestamp, host, targetUser } = data
     console.log(data)
 
-    const newMessage = generateMessage(message, timestamp, socket.id, anonId, roomId, host, 'USER')
-    Rooms.addMessage(host, newMessage)
+    if (!targetUser) {
+      const newMessage = generateMessage(message, timestamp, socket.id, anonId, roomId, host, 'USER')
+      Rooms.addMessage(host, newMessage)
+      io.to(roomId).emit('addMessage', { message: newMessage })
+    } else {
+      const newMessage = generateMessage(message, timestamp, socket.id, anonId, roomId, host, 'PEER')
+      newMessage.targetUser = targetUser
+      io.to(socket.id).to(targetUser.user).emit('addMessage', { message: newMessage })
+    }
     ack(null)
-    io.to(roomId).emit('addMessage', { message: newMessage })
   })
 
-  socket.on('toggleTyping', ({ host, userId, roomId }) => {
-    const users = Rooms.toggleTyping(host, userId)
-    io.to(roomId).emit('toggleUser', { users })
+  socket.on('toggleTyping', ({ host, userId, roomId, targetUser }) => {
+    if (!targetUser) {
+      const users = Rooms.toggleTyping(host, userId)
+      io.to(roomId).emit('toggleUser', { users })
+    } else {
+      io.to(targetUser.user).emit('toggleUser', { users: Rooms.immutableToggleTyping(host, userId) })
+    }
   })
   socket.on('disconnect', () => {
     console.log('user has left', socket.id)

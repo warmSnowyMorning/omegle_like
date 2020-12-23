@@ -34,6 +34,11 @@ class Rooms {
     return this.rooms[host].users
   }
 
+  //purpose is only one user needs to see someone typing
+  immutableToggleTyping(host, user) {
+    return this.rooms[host].users.map((someUser) => someUser.user !== user ? someUser : { ...someUser, typing: !someUser.typing })
+  }
+
   leaveRoom(user, roomDel = false) {
 
     const theirRoom = this.userLocation[user]
