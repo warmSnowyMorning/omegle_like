@@ -1,12 +1,17 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import SocketContext from '../context/SocketContext';
 import MessagesListItem from './MessagesListItem';
 
 const MessagesList = (props) => {
   const { messages } = props
   const mySocket = useContext(SocketContext)
+  const scrollHelperRef = useRef(null)
+  useEffect(() => {
+    scrollHelperRef.current.scrollIntoView({ behavior: "smooth" })
+  }, [messages])
+
   return (
-    <div>
+    <div style={{ height: '90vh', overflow: 'scroll' }}>
       {messages.map((messageInfo) => {
         //{userId === mySocket.id && type === 'ADMIN' ? content.includes('left') ? 'You\'ve just left this room!' : 'You\'ve just joined this room' : type === 'ADMIN' ? content : userId === mySocket.id ? `You: ${content}` : `Stranger ${anonId}: ${content}`}
         const { type, host, roomId, anonId, userId, timestamp, message: content, targetUser } = messageInfo
@@ -28,6 +33,7 @@ const MessagesList = (props) => {
 
         return { ...messageInfo, message: modifiedMsg }
       }).map((message, idx) => <MessagesListItem message={message} key={idx} />)}
+      <div ref={scrollHelperRef} ></div>
     </div>
   );
 }

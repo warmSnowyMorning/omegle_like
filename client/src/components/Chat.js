@@ -124,6 +124,10 @@ const Chat = (props) => {
     <div>
       <MessagesList messages={messages} />
       <TypersList users={users} />
+
+      <select value={messageTarget} onChange={handleMessageTargetChange}>
+        {users.filter(({ user }) => user !== mySocket.id).concat({ anonId: 0, user: 0 }).map(({ user, anonId }, idx) => <option value={anonId} key={anonId}>{anonId > 0 ? `Stranger ${anonId}` : 'Everyone!!'}</option>)}
+      </select>
       <input
         type='text'
         onChange={e => set_message(e.target.value)}
@@ -132,9 +136,6 @@ const Chat = (props) => {
         placeholder='type and press Enter to send!'
       />
 
-      <select value={messageTarget} onChange={handleMessageTargetChange}>
-        {users.concat({ anonId: 0, user: 0 }).map(({ user, anonId }, idx) => <option value={anonId} key={anonId}>{anonId > 0 ? `Stranger ${anonId}` : 'Everyone!!'}</option>)}
-      </select>
     </div>
   );
 }

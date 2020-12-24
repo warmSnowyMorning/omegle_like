@@ -5,7 +5,7 @@ import generateChatUrl from '../utils/generateChatUrl';
 
 const RoomsListItem = (props) => {
   const { history } = props
-  const { host, roomName, roomId, users, capacity, ...rest } = props.roomInfo
+  const { host, roomName, roomId, users, capacity, topic, ...rest } = props.roomInfo
   const mySocket = useContext(SocketContext)
   const handleRoomJoin = (e) => {
     e.preventDefault()
@@ -17,10 +17,11 @@ const RoomsListItem = (props) => {
     })
   }
   return (
-    <div style={{ border: '1px solid red' }}>
-      <h1>{roomName}</h1>
+    <div style={{ border: '1px solid red', marginBottom: '10px' }}>
+      <h1>Room name: {roomName}</h1>
+      <h1>Room topic: {topic}</h1>
+      <h1>capacity: {`${users.length}/${capacity}`}</h1>
       <button onClick={handleRoomJoin} disabled={!(users.length < capacity)}>Join</button>
-      <pre>{JSON.stringify(props.roomInfo, null, 2)}</pre>
     </div>
   )
 }

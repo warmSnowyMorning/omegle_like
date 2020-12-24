@@ -9,14 +9,14 @@ const MessagesListItem = (props) => {
   const { type, host, roomId, anonId, userId, timestamp, message: content } = message
 
   return (
-    <div style={{ border: '1px solid blue' }}>
+    <div style={{ border: '1px solid blue', marginBottom: '20px' }}>
 
 
 
-      <pre>
+      <h1>{content}</h1>
+      {/* <pre>
         {JSON.stringify(message, null, 2)}
-        <h1>{content}</h1>
-      </pre>
+      </pre> */}
     </div>
   );
 }
