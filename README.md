@@ -1,23 +1,23 @@
-# Aqua App
+# Chaos
 
-> This is a microservice component, representing the reviews of a product detail page.
+> A real time application allowing strangers to create and join public chats and engage in direct messaging
 
 
 ## Requirements
 
-This project relies on a MongoDB database and Node.js.
+This project relies on a runtime of Node.js.
 
 ### Installing Dependencies
 
-From within the root directory:
-Creates files `dev.env` and `test.env` under `/config`. An example is provided.
-Fill in the env variable `MONGODB_URL` in each, making sure to supply an appropriate MongoDB uri.
+Enter the root directory and insert the following sequential commands, then visit `localhost:3000/` to use the application.
 
-```sh
-npm install
+* **CLIENT**
+  1. cd client
+  2. npm install
+  3. npm start
 
-sudo service mongodb start
+* **SERVER**
+  1. cd server
+  2. npm install
+  3. npm start
 
-npm run dev:server
-npm run dev:client
-```
