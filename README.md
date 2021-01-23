@@ -9,7 +9,7 @@ This project relies on a runtime of Node.js.
 
 ### Installing Dependencies
 
-Enter the root directory and insert the following sequential commands, then visit `localhost:3000/` to use the application.
+Enter the root directory and insert the following sequential commands.
 
 * **CLIENT**
   1. cd client
@@ -21,3 +21,10 @@ Enter the root directory and insert the following sequential commands, then visi
   2. npm install
   3. npm start
 
+
+## Usage
+
+* Able to create and/or join public chat rooms.
+* Able to send messages in your current chat room.
+* Able to direct message other users in your current chat room.
+* Your typing state will be indicated to your targets, whether that be everyone or a direct message recipient.
